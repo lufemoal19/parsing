@@ -1,0 +1,4 @@
+ let x = 'hola'
+ /catalogo#producto
+ $prod/catalogo#producto
+ $hola 
