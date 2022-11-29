@@ -1,5 +1,1 @@
- let x = 'hola'
- /catalogo/producto
- $prod/catalogo/producto/nombre
- $hola 
- <tag>{$prod/catalogo}</tag>
+ <tag>{$prod/catalogo/producto/name}</tag>

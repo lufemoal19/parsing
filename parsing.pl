@@ -6,7 +6,7 @@ Demo of parsing
 
 :- use_module(lexing).
 
-urquery([L | R]) -->  ws, (let(L);varpath(L);startxpath(L);xpath(L);qvar(L)), ws, urquery(R), {!}.
+urquery([L | R]) -->  ws, (let(L);vartag(L);varpath(L);startxpath(L);xpath(L);qvar(L)), ws, urquery(R), {!}.
 urquery([]) --> [].
 
 let(let(X, E)) --> ws, "let", ws, id(X), ws, "=", ws, expr(E), ws.
@@ -35,8 +35,7 @@ startxpath(startxpath(I)) --> "/", xpath(I).
 varpath(varpath(I, P)) --> qvar(I), startxpath(P).
 
 % vartag -> "<" tag ">" "{" varpath "}" "</" tag ">";
-vartag(vartag(xml_id(T),id(I), xml_id(P))) --> ws, "<", tag(T), ">", "{", 
-    varpath(I, P), "}", "</", tag(T), ">", ws.  
+vartag(vartag(T, I)) --> ws, "<", tag(T), ">", "{",varpath(I), "}", "</", tag(T), ">", ws.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
