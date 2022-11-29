@@ -1,1 +1,1 @@
-let l = 'name' in <li> { for $prod in doc ('catalogo.xml')/producto return $prod/name } </li>
+let x = 10
