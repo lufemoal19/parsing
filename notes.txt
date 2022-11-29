@@ -9,3 +9,7 @@ xpath(xpath([I|R])) --> (tag(I) ; "/", xpath(R)).
 startxpath(startxpath(I,R)) --> "//", xpath(I).
 
 , xpath(I)
+
+ $prod/catalogo/producto/name
+ <tag>{$prod/catalogo/producto/name}</tag>
+ 
