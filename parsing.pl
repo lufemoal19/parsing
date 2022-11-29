@@ -1,35 +1,3 @@
-
-Skip to content
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
-@lufemoal19
-lufemoal19 /
-parsing
-Public
-
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-
-    Settings
-
-parsing/parsing.pl
-@nataliarce
-nataliarce ya parasear xpath sirve
-Latest commit 2e8a0cd Nov 28, 2022
-History
-2 contributors
-@nataliarce
-@lufemoal19
-50 lines (37 sloc) 1.32 KB
 /*
 Demo of parsing
 @author loriacarlos@gmail.com
@@ -37,7 +5,6 @@ Demo of parsing
 */
 
 :- use_module(lexing).
-
 
 urquery([L | R]) -->  ws, (let(L);varpath(L);startxpath(L);xpath(L);qvar(L)), ws, urquery(R), {!}.
 urquery([]) --> [].
