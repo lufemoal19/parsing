@@ -1,1 +1,4 @@
- //catalogo/producto/nombre 
+ let x = 'hola'
+ /catalogo#producto
+ $prod/catalogo#producto
+ $hola 
