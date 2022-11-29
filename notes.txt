@@ -1,3 +1,11 @@
+ let l = 'name' in <li> { for $prod in doc ('catalogo.xml')/producto/categoria return <ul>{$prod/nombre}</ul> } </li>
+ let l = 'name' in <li> { for $prod in doc ('catalogo.xml')/producto/categoria return $prod/nombre } </li>
+ 
+ 
+ let l = 'name' in <li> { for $prod in doc ('catalogo.xml')/producto/categoria return $prod/nombre } </li>
+
+ <ul> { $prod/nombre } </ul>  
+ 
  let x = 'hola'
  /catalogo'/'producto
  $hola 
@@ -13,3 +21,83 @@ startxpath(startxpath(I,R)) --> "//", xpath(I).
  $prod/catalogo/producto/name
  <tag>{$prod/catalogo/producto/name}</tag>
  
+main_urquery([L | R]) -->  ws, (prog_urquery(L);let(L);tagquery(L);forquery(L);exprquery(L);sourcequery(L);docpath(L);varquery(L);vartag(L);varpath(L);startxpath(L);xpath(L);qvar(L)), ws, main_urquery(R), {!}.
+main_urquery([]) --> [].
+
+let(let(X, E)) --> ws, "let", ws, id(X), ws, "=", ws, expr(E), ws.
+
+
+for in $qvar
+prog(
+    letprog(
+        id(l), 
+        expr(name), 
+        tagquery(
+            tag(li), 
+            forquery(
+                qvar(id(prod)), 
+                exprquery(
+                    qvar(id(catalogo)), 
+                    xpath(tag(producto))
+                ), 
+                varpath(
+                    qvar(id(prod)), 
+                    xpath(tag(name))
+                )
+            )
+        )
+    )
+).
+
+for in doc
+prog(
+    letprog(
+        id(l), 
+        expr(name), 
+        tagquery(
+            tag(li), 
+            forquery(
+                qvar(id(prod)), 
+                exprquery(
+                    docpath(expr('catalogo.xml')), 
+                    xpath(tag(producto), 
+                    xpath(tag(categoria)))
+                ), 
+                varpath(
+                    qvar(id(prod)), 
+                    xpath(tag(name))
+                )
+            )
+        )
+    )
+).
+
+
+
+let l = 'name' in <li> { for $prod in doc ('catalogo.xml')/producto return $prod/name } </li>
+prog(letprog(
+    id(l), 
+    js_expr(name), 
+    uq(
+        tagquery(xml_id(li), 
+        forquery(
+            qvar(id(prod)), 
+            exprquery(
+                sourcequery(
+                    docpath(
+                        js_expr('catalogo.xml')
+                        )), 
+                        startxpath(xpath
+                        (xml_id(producto))
+                        )), 
+                        varquery(
+                            varpath(
+                                qvar(id(prod)), 
+                                startxpath(xpath(xml_id(name)))
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ).
