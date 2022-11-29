@@ -20,15 +20,18 @@ js_string(js_expr(I)) --> "'", identifier(I), "'".
 expr(X) --> id(X);num(X);js_string(X).
 
 % qvar: $variable
-qvar(id(I)) --> ws, [36], identifier(I), ws.
+qvar(qvar(I)) --> ws, [36], identifier(I), ws.
 tag(I) --> ws, xml_id(I), ws.
 
 %/catalogo/producto/nombre
-%xpath "/" tag(I)
-xpath(x_id(I)) --> (tag(I) ; "#", xpath(I)). 
-startxpath(xpath(I)) --> "/", xpath(I).
+% xpath "/" tag(I)
+xpath(xpath(I, R)) --> tag(I), "/", xpath(R).
+xpath(xpath(I)) --> tag(I). 
+
+startxpath(startxpath(I)) --> "/", xpath(I).
 
 %$galleta/sabor 
+% gramatica varpath varpath ->qvar (startxpath)?;
 %varpath(xml_id(I)) --> qvar(I), "(", startxpath(I), ")", "?".
 varpath(varpath(I, P)) --> qvar(I), startxpath(P).
 

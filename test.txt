@@ -1,4 +1,4 @@
  let x = 'hola'
- /catalogo#producto
- $prod/catalogo#producto
+ /catalogo/producto/nombre
+ $prod/catalogo/producto
  $hola 
