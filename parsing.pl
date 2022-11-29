@@ -11,8 +11,6 @@ main_urquery([]) --> [].
 
 let(let(X, E)) --> ws, "let", ws, id(X), ws, "=", ws, expr(E), ws.
 
-
-
 id(id(I)) --> identifier(I).
 xml_id(I) --> identifier(I).
 num(num(N)) -->  number(N).
