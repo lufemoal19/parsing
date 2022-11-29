@@ -5,7 +5,6 @@ Demo of parsing
 */
 
 :- use_module(lexing).
-% 
 main_urquery([L | R]) -->  ws, (prog_urquery(L);let(L);tagquery(L);forquery(L);exprquery(L);sourcequery(L);docpath(L);varquery(L);vartag(L);varpath(L);startxpath(L);xpath(L);qvar(L)), ws, main_urquery(R), {!}.
 main_urquery([]) --> [].
 
@@ -56,7 +55,7 @@ urquery(uq(I)) --> tagquery(I).
 
 letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U).
 
-prog_urquery(prog(I)) --> letprog(I); urquery(I).
+prog_urquery(prog(I)) --> (letprog(I); urquery(I)), {!}.
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 test(L) :- 
@@ -64,5 +63,5 @@ test(L) :-
     read_file_to_codes(File, Codes, []),
     atom_codes(Input, Codes),
     format('Input=~n~s~n', [Input]),
-    phrase(main_urquery(L), Codes)
+    phrase(prog_urquery(L), Codes)
 .
