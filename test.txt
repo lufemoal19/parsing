@@ -1,2 +1,1 @@
-let x = 10
- let l = 'name' in <li> { for $prod in doc ('catalogo.xml')/producto/categoria return $prod/nombre } </li>
+let y = x

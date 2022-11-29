@@ -1,12 +1,13 @@
 /*
-@about PARSER URQUERY 
-@authors grupo 03 - 1PM
+@about UrQuery parser
+@authors Grupo 3-1pm
 @since 2022
 */
 
+:- module(parsing, [prog_urquery/3]).
 :- use_module(lexing).
 
-main_urquery([L | R]) -->  ws, (prog_urquery(L);varquery(L);vartag(L);varpath(L)), ws, main_urquery(R), {!}.
+main_urquery([L | R]) -->  ws, (let(L);prog_urquery(L);varquery(L);vartag(L);varpath(L)), ws, main_urquery(R), {!}.
 main_urquery([]) --> [].
 
 let(let(X, E)) --> ws, "let", ws, id(X), ws, "=", ws, expr(E), ws.
@@ -56,9 +57,14 @@ tagquery(tagquery(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, forquery(I), ws, 
 urquery(I) --> tagquery(I).
 
 letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U).
+letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 
-prog_urquery(prog(I)) --> (letprog(I); urquery(I)), {!}.
-prog_urquery([]) --> [].
+urquery_list([L | R]) --> (letprog(L); urquery(L)), urquery_list(R), {!}.
+urquery_list([]) --> [].
+
+prog_urquery(sequence(L)) --> urquery_list(L).
+prog_urquery(none) --> [].
+
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 test(L) :- 
