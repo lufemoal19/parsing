@@ -57,10 +57,6 @@ tagquery(tagquery(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, forquery(I), ws, 
 urquery(I) --> tagquery(I).
 
 letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U).
-<<<<<<< HEAD
-letprog(letprog(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
-
-=======
 letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 
 urquery_list([L | R]) --> (letprog(L); urquery(L)), urquery_list(R), {!}.
@@ -68,7 +64,6 @@ urquery_list([]) --> [].
 
 prog_urquery(sequence(L)) --> urquery_list(L).
 prog_urquery(none) --> [].
->>>>>>> 2c425259b9810b107a69dde8c738ae47f8bcfb2d
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
  
  let uri = '.' in 
     <ul> { 
@@ -7,6 +6,4 @@
                     { $li } 
                </li> } 
     </ul>
-=======
 let y = x
->>>>>>> 2c425259b9810b107a69dde8c738ae47f8bcfb2d
