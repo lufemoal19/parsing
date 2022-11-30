@@ -29,7 +29,7 @@ startxpath(I) --> "/", xpath(I).
 
 %$galleta/sabor 
 % gramatica varpath varpath ->qvar (startxpath)?;
-varpath(varpath(I, P)) --> qvar(I), startxpath(P).
+varpath(varpath(I, P)) --> (qvar(I) ; qvar(I), startxpath(P)).
 
 % vartag -> "<" tag ">" "{" varpath "}" "</" tag ">";
 vartag(vartag(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, varpath(I), ws, "}", ws, "</", tag(T), ">", ws. 
@@ -64,6 +64,7 @@ urquery_list([]) --> [].
 
 prog_urquery(sequence(L)) --> urquery_list(L).
 prog_urquery(none) --> [].
+>>>>>>> 2c425259b9810b107a69dde8c738ae47f8bcfb2d
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
