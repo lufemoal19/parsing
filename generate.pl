@@ -60,6 +60,13 @@ generate_js(let(Left, Right), Stream) :-
     format(Stream, ';', [])
 .
 
+% const li_tag = child => ur_tag('li', child)
+
+generate_js(vartag(T, I), Stream) :-
+    format(Stream, 'const ~s_tag = ~s => ur_tag("~s", ~s)', [T, I, T, I])
+.
+
+
 generate_js(id(I), Stream)   :- format(Stream, '~s', I).
 generate_js(num(N), Stream)  :- format(Stream, '~d', N).
 
