@@ -61,7 +61,7 @@ urquery(I) --> tagquery(I).
 letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U), ws.
 letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 
-urquery_list([L | R]) --> (letprog(L); urquery(L); exprquery(L);varpath(L);docpath(L); startxpath(L);xpath(L);qvar(L)), urquery_list(R), {!}.
+urquery_list([L | R]) --> (letprog(L); urquery(L); forquery(L);exprquery(L); vartag(L); varpath(L);docpath(L); startxpath(L);xpath(L);qvar(L)), urquery_list(R), {!}.
 urquery_list([]) --> [].
 
 prog_urquery(sequence(L)) --> urquery_list(L), {!}.

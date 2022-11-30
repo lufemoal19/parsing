@@ -1,1 +1,2 @@
-$var/hi
+for $li in doc(uri)/li
+return <li>{$li}</li>
