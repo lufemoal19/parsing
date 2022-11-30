@@ -64,7 +64,6 @@ urquery_list([]) --> [].
 
 prog_urquery(sequence(L)) --> urquery_list(L).
 prog_urquery(none) --> [].
->>>>>>> 2c425259b9810b107a69dde8c738ae47f8bcfb2d
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
