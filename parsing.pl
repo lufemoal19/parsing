@@ -35,7 +35,7 @@ varpath(varpath(I, P)) --> (qvar(I) ; qvar(I), startxpath(P)).
 vartag(vartag(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, varpath(I), ws, "}", ws, "</", tag(T), ">", ws. 
 
 % varquery -> vartag | varpath varquery(T, I) --> vartag(T,I).
-varquery(vq(I)) --> vartag(I); varpath(I).
+varquery(I) --> vartag(I); varpath(I).
 
 
 % docpath -> "doc" "(" expr ")"
