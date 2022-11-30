@@ -56,7 +56,7 @@ tagquery(tagquery(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, forquery(I), ws, 
 %urquery -> tagquery;
 urquery(I) --> tagquery(I).
 
-letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U).
+letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U), ws.
 letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 
 urquery_list([L | R]) --> (letprog(L); urquery(L)), urquery_list(R), {!}.
