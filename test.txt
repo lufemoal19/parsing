@@ -1,1 +1,3 @@
-let y = x
+
+<li> { for $prod in doc ('catalogo.xml')/producto/categoria return $prod } </li>
+<ul> { for $li in doc (uri)/li return <li> { $li/li } </li> } </ul>
