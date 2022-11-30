@@ -60,13 +60,28 @@ generate_js(let(Left, Right), Stream) :-
     format(Stream, ';', [])
 .
 
+
+generate_js(urquery(I), Stream):-
+    format(Stream, 'function ur_query01(uri){~n',[]),
+    generate_js(I, Stream),
+    format(Stream, '~n}',[])
+.
+
+generate_js(tagquery(T,I), Stream) :-
+    generate_js(lambda(tag(T)), Stream),
+    format(Stream, '~n', []),
+    generate_js(I, Stream),
+    format(Stream, 'return ', []),
+    generate_js(T, Stream),
+    format(Stream, '_tag([...for_01(uri)]);', [])
+.
+
 generate_js(forquery(V, E, R), Stream) :-
     format(Stream,'function * for_01(uri){~n~t',[]),
-    format(Stream, 'const xpath_result_iter = ur_evaluate(ur_doc(uri,',[]),
-    generate_js(E, Stream),
-    format(Stream, ',)',[]),
-    format(Stream, '~n', []),
-    generate_js_lambda(R, Stream),
+    format(Stream, 'const xpath_result_iter = ur_evaluate(ur_doc(uri,"',[]),
+    generate_js(path(E), Stream),
+    format(Stream, '");~n',[]),
+    generate_js(lambda(R), Stream),
     format(Stream, '~n', []),
 
     format(Stream, 'for (', []),
@@ -76,17 +91,26 @@ generate_js(forquery(V, E, R), Stream) :-
     generate_js(R, Stream),
     format(Stream, '_tag(',[]),
     generate_js(V, Stream),
-    format(Stream, ')~n',[]),
+    format(Stream, ');~n',[]),
     format(Stream, '}~n', [])
     %generate_js(function(V, E, R), Stream)
 .
-/*
-    format(Stream, 'const ', []),
+
+generate_js(lambda(vartag(T, _)), Stream) :-
+    format(Stream, 'const ',[]),
     generate_js(T, Stream),
-    format(Stream, '_tag = child => ur_tag(',[]),
+    format(Stream,'_tag = child => ur_tag("',[]),
     generate_js(T, Stream),
-    format(Stream,',child)',[])
-*/
+    format(Stream, '",child);', [])
+.
+generate_js(lambda(tag(T)), Stream) :-
+    format(Stream, 'const ',[]),
+    generate_js(T, Stream),
+    format(Stream,'_tag = children => ur_tag("',[]),
+    generate_js(T, Stream),
+    format(Stream, '",children);', [])
+.
+
 generate_js(vartag(T, _), Stream) :-
     generate_js(T, Stream)
 .
@@ -95,17 +119,12 @@ generate_js(tag(T), Stream) :-
     format(Stream, '~s',T)
 .
 
-generate_js_lambda(vartag(T, _), Stream) :-
-    format(Stream, 'const ',[]),
-    generate_js(T, Stream),
-    format(Stream,'_tag = child => ur_tag(',[]),
-    generate_js(T, Stream),
-    format(Stream, ',child)', [])
-.
-
-%'const xpath_result_iter = ur_evaluate(ur_doc(hola.xml/hi))'
 generate_js(exprquery(I, P), Stream) :- 
     generate_js(I, Stream),
+    generate_js(P, Stream)
+.
+
+generate_js(path(exprquery(_, P)), Stream) :- 
     generate_js(P, Stream)
 .
 
@@ -137,11 +156,7 @@ generate_js(id(I), Stream)   :- format(Stream, '~s', I).
 generate_js(expr(E), Stream) :- format(Stream, '"~s"', E).
 generate_js(num(N), Stream)  :- format(Stream, '~d', N).
 
-% const li_tag = child => ur_tag('li', child)
-generate_js(tag(T), Stream)  :- format(Stream, 'const ~s_tag', T).
-
-
-
+%%%  generate args list
 
 generate_js_argslist([], _).
 generate_js_argslist([Arg], Stream) :- !,

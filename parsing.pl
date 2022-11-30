@@ -56,12 +56,12 @@ forquery(forquery(V, I, P)) --> ws, "for", ws, qvar(V), ws, "in", ws, exprquery(
 tagquery(tagquery(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, forquery(I), ws, "}", ws,  "</", tag(T), ">", ws. 
 
 %urquery -> tagquery;
-urquery(I) --> tagquery(I).
+urquery(urquery(I)) --> tagquery(I).
 
-letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U), ws.
+letprog(let(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U), ws.
 letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 
-urquery_list([L | R]) --> (letprog(L); urquery(L); forquery(L);exprquery(L); vartag(L); varpath(L);docpath(L); startxpath(L);xpath(L);qvar(L)), urquery_list(R), {!}.
+urquery_list([L | R]) --> (letprog(L); urquery(L); tagquery(L);forquery(L);exprquery(L); vartag(L); varpath(L);docpath(L); startxpath(L);xpath(L);qvar(L)), urquery_list(R), {!}.
 urquery_list([]) --> [].
 
 prog_urquery(sequence(L)) --> urquery_list(L), {!}.

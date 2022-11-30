@@ -1,2 +1,1 @@
-for $li in doc(uri)/li
-return <li>{$li}</li>
+ <h1> { for $li in doc(uri)/li return <h2>{$li}</h2> } </h1>
