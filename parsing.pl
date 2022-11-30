@@ -28,7 +28,7 @@ startxpath(I) --> "/", xpath(I).
 
 %$galleta/sabor 
 % gramatica varpath varpath ->qvar (startxpath)?;
-varpath(varpath(I, P)) --> qvar(I), startxpath(P).
+varpath(varpath(I, P)) --> (qvar(I) ; qvar(I), startxpath(P)).
 
 % vartag -> "<" tag ">" "{" varpath "}" "</" tag ">";
 vartag(vartag(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, varpath(I), ws, "}", ws, "</", tag(T), ">", ws. 
@@ -56,6 +56,8 @@ tagquery(tagquery(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, forquery(I), ws, 
 urquery(I) --> tagquery(I).
 
 letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U).
+letprog(letprog(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
+
 
 prog_urquery(prog(I)) --> (letprog(I); urquery(I)), {!}.
 prog_urquery([]) --> [].
