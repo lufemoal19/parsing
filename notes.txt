@@ -28,7 +28,7 @@ let(let(X, E)) --> ws, "let", ws, id(X), ws, "=", ws, expr(E), ws.
 
 
 for in $qvar
-prog(
+sequence(
     letprog(
         id(l), 
         expr(name), 

@@ -30,7 +30,7 @@ generate_js(comment(C), Stream) :-
 generate_js(function(id(Name), Args, Body), Stream) :-
     format(Stream, '~n function ~s(', [Name]),
     generate_js_argslist(Args, Stream),
-    format(Stream, '){', []),
+    format(Stream, '){~n', []),
     generate_js(Body, Stream),
     format(Stream, '}~n', [])
 .
@@ -60,15 +60,50 @@ generate_js(let(Left, Right), Stream) :-
     format(Stream, ';', [])
 .
 
-% const li_tag = child => ur_tag('li', child)
 
 generate_js(vartag(T, I), Stream) :-
     format(Stream, 'const ~s_tag = ~s => ur_tag("~s", ~s)', [T, I, T, I])
 .
 
+%'const xpath_result_iter = ur_evaluate(ur_doc(hola.xml/hi))'
+generate_js(exprquery(I, P), Stream) :- 
+    generate_js(I, Stream),
+    generate_js(P, Stream)
+.
+
+generate_js(exprquery(I), Stream) :-
+    generate_js(I, Stream)
+.
+
+generate_js(varpath(V, X), Stream) :- 
+    generate_js(V, Stream),
+    generate_js(X, Stream)
+.
+
+generate_js(docpath(E), Stream) :- 
+    generate_js(E, Stream)
+.
+
+generate_js(qvar(I), Stream) :- generate_js(I, Stream).
+
+generate_js(xpath(I), Stream) :- 
+    format(Stream, "/~s", I)
+.
+
+generate_js(xpath(I, R), Stream):-
+    format(Stream, "/~s", I),
+    generate_js(R, Stream)
+.
 
 generate_js(id(I), Stream)   :- format(Stream, '~s', I).
+generate_js(expr(E), Stream) :- format(Stream, '"~s"', E).
 generate_js(num(N), Stream)  :- format(Stream, '~d', N).
+
+% const li_tag = child => ur_tag('li', child)
+generate_js(tag(T), Stream)  :- format(Stream, 'const ~s_tag', T).
+
+
+
 
 generate_js_argslist([], _).
 generate_js_argslist([Arg], Stream) :- !,

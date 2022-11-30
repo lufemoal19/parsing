@@ -23,15 +23,17 @@ expr(X) --> id(X);num(X);uq_string(X).
 qvar(qvar(I)) --> ws, [36], id(I), ws.
 tag(tag(I)) --> ws, xml_id(I), ws.
 
-xpath(xpath(I, R)) --> tag(I), "/", xpath(R).
-xpath(xpath(I)) --> tag(I). 
+xpath(xpath(I, R)) --> xml_id(I), "/", xpath(R).
+xpath(xpath(I)) --> xml_id(I). 
 startxpath(I) --> "/", xpath(I).
 
 %$galleta/sabor 
 % gramatica varpath varpath ->qvar (startxpath)?;
-varpath(varpath(I, P)) --> (qvar(I) ; qvar(I), startxpath(P)).
+varpath(varpath(I, P)) --> (qvar(I), startxpath(P) ; qvar(I)).
 
 % vartag -> "<" tag ">" "{" varpath "}" "</" tag ">";
+% <h1>hola</h1>
+% <a> $var/li </a>
 vartag(vartag(T,I)) --> ws, "<", tag(T), ">", ws, "{", ws, varpath(I), ws, "}", ws, "</", tag(T), ">", ws. 
 
 % varquery -> vartag | varpath varquery(T, I) --> vartag(T,I).
@@ -45,7 +47,7 @@ docpath(docpath(E)) --> ws, "doc", ws, "(", expr(E), ")", ws.
 sourcequery(I) --> docpath(I) ; qvar(I). 
 
 %exprquery -> sourcequery ( startxpath )? ;
-exprquery(exprquery(I, P)) --> sourcequery(I), startxpath(P).
+exprquery(exprquery(I, P)) --> (sourcequery(I), startxpath(P);sourcequery(I)).
 
 %forquery -> for qvar in exprquery return varquery;
 forquery(forquery(V, I, P)) --> ws, "for", ws, qvar(V), ws, "in", ws, exprquery(I), ws, "return", ws, varquery(P). 
@@ -59,7 +61,7 @@ urquery(I) --> tagquery(I).
 letprog(letprog(I, E, U)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws, "in", ws, urquery(U), ws.
 letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 
-urquery_list([L | R]) --> (letprog(L); urquery(L)), urquery_list(R), {!}.
+urquery_list([L | R]) --> (letprog(L); urquery(L); exprquery(L);varpath(L);docpath(L); startxpath(L);xpath(L);qvar(L)), urquery_list(R), {!}.
 urquery_list([]) --> [].
 
 prog_urquery(sequence(L)) --> urquery_list(L), {!}.
