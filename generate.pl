@@ -1,11 +1,12 @@
 /*
 @about Generador JS
-@author Grupo 3-1pm
+@authors Grupo 3-1pm
 @since 2022
 */
 
 :- module(generate, [generate_js_to_atom/2]).
 
+:- use_module(parsing).
 :- use_module(atom_stream).
 :- use_module(transform).
 
@@ -21,6 +22,11 @@ generate_js_to_atom(JSAst, JSAtom) :-
 generate_js(sequence(L), Stream) :-
     forall(member(P, L), (generate_js(P, Stream), nl(Stream)) )
 .
+
+generate_js(comment(C), Stream) :-
+    format(Stream, '// ~s~n', [C])
+.
+
 generate_js(function(id(Name), Args, Body), Stream) :-
     format(Stream, '~n function ~s(', [Name]),
     generate_js_argslist(Args, Stream),
@@ -45,6 +51,7 @@ generate_js(return(Expr), Stream) :-
 generate_js(return, Stream) :-
     format(Stream, ' return;', [])
 .
+
 generate_js(let(Left, Right), Stream) :-
     format(Stream, 'let ', []),
     generate_js(Left, Stream),
@@ -70,14 +77,14 @@ generate_js_argslist([Arg1, Arg2 | RestArgs], Stream) :-
 
 
 %%%%%%%%%% TESTS %%%%%%%%%%
-test_using_parsing(JSAtom) :-
+test(JSAtom) :-
     File = 'test.txt',
     read_file_to_codes(File, Codes, []),
     atom_codes(Input, Codes),
-    format('Input=~n~s~n', [Input]),
-    phrase(main_urquery(Prog), Codes),
-    format('Ast from Input=~q~n', [Prog]),
+    format('Input = ~n~s~n', [Input]),
+    phrase(prog_urquery(Prog), Codes),
+    format('Ast from Input = ~q~n', [Prog]),
     toJS(Prog, JSProg),
     generate_js_to_atom(JSProg, JSAtom),
-    format('Output=~n~s~n', [JSAtom])    
+    format('Output = ~n~s~n', [JSAtom])    
 .
