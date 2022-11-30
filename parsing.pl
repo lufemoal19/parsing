@@ -62,7 +62,7 @@ letprog(let(I, E)) --> ws, "let", ws, id(I), ws, "=", ws, expr(E), ws.
 urquery_list([L | R]) --> (letprog(L); urquery(L)), urquery_list(R), {!}.
 urquery_list([]) --> [].
 
-prog_urquery(sequence(L)) --> urquery_list(L).
+prog_urquery(sequence(L)) --> urquery_list(L), {!}.
 prog_urquery(none) --> [].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Lexer Xquery Utils %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
