@@ -101,3 +101,18 @@ prog(letprog(
             )
         )
     ).
+
+
+generate_main(Stream) :-
+    format(Stream, '~n~t let uri = ur_active_doc();', []),
+    format(Stream, '~n~t return urquery_01(uri);', [])
+.
+
+generate_js(let(I, E, U), Stream) :- 
+    format(Stream, 'let ', []),
+    generate_js(I, Stream),
+    format(Stream, ' = ', []),
+    generate_js(E, Stream),
+    format(Stream,';~n', []),
+    generate_js(U, Stream)
+.

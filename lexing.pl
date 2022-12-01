@@ -1,6 +1,6 @@
 /*
-Demo of lexing
-@author loriacarlos@gmail.com
+@about UrQuery lexing
+@authors Grupo 3-1pm
 @since 2022
 */
 :- module(lexing, [identifier/3, ws/2]).
@@ -33,6 +33,3 @@ is_id(A) :- atom_codes(A, Codes), phrase(identifier, Codes).
 
 ws --> (" ";"\t";"\n";"\r"), ws.
 ws -->  [].
-
-
-
