@@ -84,6 +84,7 @@ generate_js(tagquery(T,I), Stream) :-
 .
 
 generate_js(forquery(V, E, R), Stream) :-
+    format(Stream,'import {ur_doc, ur_evaluate, ur_tag, ur_active_doc} from ''./urquery.mjs''~n~t',[]),
     format(Stream,'function * for_01(uri){~n~t',[]),
     format(Stream, 'const xpath_result_iter = ur_evaluate(ur_doc(uri,"',[]),
     generate_js(path(E), Stream),
@@ -198,8 +199,6 @@ test(JSAtom) :-
 response(Request, JSAtom) :-
     atom_codes(Request, Codes),
     phrase(prog_urquery(Prog), Codes),
-    %format('Ast from Input = ~q~n', [Prog]),
     toJS(Prog, JSProg),
     generate_js_to_atom(JSProg, JSAtom)
-    %format('Output = ~n~s~n', [JSAtom])    
 .
