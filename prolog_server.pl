@@ -3,10 +3,10 @@ Service for adding two numbers
 URI: /add
 VERB: POST
 Body 
-    Expects:JSON {"a":Some_Number1, "b":Some_Number2 }
+    Expects:JSON {"urquery":urquery_code}
     
-Returns: {"accepted":true, "answer":Some_Number1+Some_Number2}    if data ok
-         {"accepted":false, "answer":0, "msg":some_error_message} othwerwise
+Returns: {"accepted": true, "answer": js_code}    if data ok
+         {"accepted": false, "answer": "", "msg": some_error_message} othwerwise
              
 author: loriacarlos@gmail.com
 since: 2022
@@ -17,6 +17,8 @@ since: 2022
 :- use_module(library(http/http_log)).
 
 :- use_module(library(http/html_write)).
+
+:- use_module(generate).
 
 % URL handlers.
 :- http_handler('/add', handle_request, [method(post)]).
@@ -36,10 +38,9 @@ set_setting(http:logfile, 'service_log_file.log').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% BUSINESS LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculates a + b.
-solve(_{a:X, b:Y}, _{status: true, answer:N, msg:'succeed'}) :-
-    number(X),
-    number(Y),!,
-    N is X + Y
+solve(_{code: X}, _{status: true, answer:N, msg:'succeed'}) :-
+    atom_codes(X, O),
+    N is O
 .
 solve(_, _{accepted: false, answer:0, msg:'Error: failed number validation'}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,3 +65,18 @@ home(_Request) :-
     format('*** Serving on port ~d *** ~n', [Port]),
     server(Port).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+extract_code_bytes(JSon, Bytes):-
+    SourceCode = JSon.get(code),
+	atom_codes(SourceCode, Bytes)
+.
+
+test_03 :-
+   JSon = _{code:'//My first comment*\nlet d = "text.xml";\nlet a = "text2.xml";'},
+   extract_code_bytes(JSon, Bytes),
+   format('~s~n', [Bytes]),
+   atom_codes(FromBytes, Bytes),
+   Original = JSon.get(code),
+   format('original ~n~s~n == ~n~s~n', [Original, FromBytes])
+.
