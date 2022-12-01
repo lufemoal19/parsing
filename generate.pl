@@ -4,7 +4,8 @@
 @since 2022
 */
 
-:- module(generate, [generate_js_to_atom/2]).
+
+:- module(generate, [response/2]).
 
 :- use_module(parsing).
 :- use_module(atom_stream).
@@ -189,6 +190,15 @@ test(JSAtom) :-
     read_file_to_codes(File, Codes, []),
     atom_codes(Input, Codes),
     format('Input = ~n~s~n', [Input]),
+    phrase(prog_urquery(Prog), Codes),
+    format('Ast from Input = ~q~n', [Prog]),
+    toJS(Prog, JSProg),
+    generate_js_to_atom(JSProg, JSAtom),
+    format('Output = ~n~s~n', [JSAtom])    
+.
+
+response(request, JSAtom) :-
+    atom_codes(request, Codes),
     phrase(prog_urquery(Prog), Codes),
     format('Ast from Input = ~q~n', [Prog]),
     toJS(Prog, JSProg),

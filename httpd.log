@@ -1,0 +1,21 @@
+server(started, 1669868538).
+/*Wed Nov 30 22:22:17 2022*/ request(1, 1669868537.984, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_type('application/json'),user_agent('PostmanRuntime/7.29.0'),postman_token('0b5eb52a-f654-4d00-ba40-55c6a7a96aaa'),host(localhost),port(8000),connection('keep-alive'),content_length(23)]).
+completed(1, 0.03125, 64, 500, error("Illegal HTTP parameter: let x = 'hola'")).
+/*Wed Nov 30 22:28:52 2022*/ request(2, 1669868932.400, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_type('application/json'),user_agent('PostmanRuntime/7.29.0'),postman_token('1766904b-b6ab-4e0e-9a97-64a91a284a90'),host(localhost),port(8000),connection('keep-alive'),content_length(17)]).
+completed(2, 0.0, 79, 200, ok).
+/*Wed Nov 30 22:34:01 2022*/ request(3, 1669869241.590, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_length(17),host(localhost),port(8000),user_agent('Java-http-client/19.0.1'),content_type('application/json')]).
+completed(3, 0.0, 79, 200, ok).
+/*Wed Nov 30 22:55:09 2022*/ request(4, 1669870509.790, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_type('application/json'),user_agent('PostmanRuntime/7.29.0'),postman_token('2b64d4d3-946f-4b42-ad3a-1518d556144f'),host(localhost),port(8000),connection('keep-alive'),content_length(17)]).
+completed(4, 0.0, 79, 200, ok).
+server(stopped, 1669870890).
+server(started, 1669870898).
+/*Wed Nov 30 23:01:38 2022*/ request(1, 1669870898.023, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_type('application/json'),user_agent('PostmanRuntime/7.29.0'),postman_token('dc1b01e6-3898-4a4f-bfce-91dcb49d8e4b'),host(localhost),port(8000),connection('keep-alive'),content_length(17)]).
+completed(1, 0.04687500000000001, 46, 200, ok).
+server(stopped, 1669870926).
+server(started, 1669870949).
+/*Wed Nov 30 23:02:29 2022*/ request(1, 1669870949.079, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_type('application/json'),user_agent('PostmanRuntime/7.29.0'),postman_token('3dd8d621-7e90-4e02-9a01-9af5200519cc'),host(localhost),port(8000),connection('keep-alive'),content_length(17)]).
+completed(1, 0.015625, 52, 500, error("Illegal HTTP parameter: 10")).
+server(stopped, 1669871013).
+server(started, 1669871021).
+/*Wed Nov 30 23:03:40 2022*/ request(1, 1669871020.650, [peer(ip(127,0,0,1)),method(post),request_uri('/add'),path('/add'),http_version(1-1),content_type('application/json'),user_agent('PostmanRuntime/7.29.0'),postman_token('a7ca86aa-bbbc-454b-a263-7a6acbf1e386'),host(localhost),port(8000),connection('keep-alive'),content_length(17)]).
+completed(1, 0.04687500000000001, 46, 200, ok).
