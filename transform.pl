@@ -1,3 +1,9 @@
+/*
+@about transform
+@authors Grupo 3-1pm
+@since 2022
+*/
+
 :- module(transform, [toJS/2]).
 
 toJS(sequence(L), sequence(JS)) :-

@@ -1,15 +1,7 @@
 /*
-Service for adding two numbers
-URI: /add
-VERB: POST
-Body 
-    Expects:JSON {"urquery":urquery_code}
-    
-Returns: {"accepted": true, "answer": js_code}    if data ok
-         {"accepted": false, "answer": "", "msg": some_error_message} othwerwise
-             
-author: loriacarlos@gmail.com
-since: 2022
+@about server
+@authors Grupo 3-1pm
+@since 2022
 */
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
