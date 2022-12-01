@@ -195,11 +195,11 @@ test(JSAtom) :-
     format('Output = ~n~s~n', [JSAtom])    
 .
 
-response(request, JSAtom) :-
-    atom_codes(request, Codes),
+response(Request, JSAtom) :-
+    atom_codes(Request, Codes),
     phrase(prog_urquery(Prog), Codes),
-    format('Ast from Input = ~q~n', [Prog]),
+    %format('Ast from Input = ~q~n', [Prog]),
     toJS(Prog, JSProg),
-    generate_js_to_atom(JSProg, JSAtom),
-    format('Output = ~n~s~n', [JSAtom])    
+    generate_js_to_atom(JSProg, JSAtom)
+    %format('Output = ~n~s~n', [JSAtom])    
 .

@@ -38,11 +38,12 @@ set_setting(http:logfile, 'service_log_file.log').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% BUSINESS LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculates a + b.
-solve(_{code: X}, _{status: true, answer:N, msg:'succeed'}) :-
-    atom_codes(X, O),
-    N is O
+solve(_{code: L}, _{status: true, answer:N, msg:'succeed'}) :-
+    %atom_codes(L, Codes),
+    response(L, JSAtom),
+    N = JSAtom
 .
-solve(_, _{accepted: false, answer:0, msg:'Error: failed number validation'}).
+solve(_{code: L}, _{accepted: false, answer:L, msg:'Error: failed syntax validation'}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 home(_Request) :-
