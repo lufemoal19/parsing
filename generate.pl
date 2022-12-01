@@ -27,8 +27,20 @@ generate_js(comment(C), Stream) :-
     format(Stream, '// ~s~n', [C])
 .
 
-generate_js(function(id(Name), Args, Body), Stream) :-
+generate_js(function(id(Name)), Stream) :-
     format(Stream, '~n function ~s(', [Name]),
+    format(Stream, '){~n', []),
+    generate_main(Stream),
+    format(Stream, '~n}~n', [])
+.
+
+generate_main(Stream) :-
+    format(Stream, '~n let uri = ur_active_doc();', []),
+    format(Stream, '~n return urquery_01();', [])
+.
+
+generate_js(function(id(Name), Args, Body), Stream) :-
+    format(Stream, '~n function ~s(uri', [Name]),
     generate_js_argslist(Args, Stream),
     format(Stream, '){~n', []),
     generate_js(Body, Stream),
@@ -70,9 +82,8 @@ generate_js(let(I, E, U), Stream) :-
 .
 
 generate_js(urquery(I), Stream):-
-    format(Stream, 'function ur_query01(uri){~n',[]),
     generate_js(I, Stream),
-    format(Stream, '~n}',[])
+    format(Stream, '~n',[])
 .
 
 generate_js(tagquery(T,I), Stream) :-
@@ -99,12 +110,22 @@ generate_js(for(V, R), Stream) :-
     format(Stream, '~t for (', []),
     generate_js(V, Stream),
     format(Stream, ' of xpath_result_iter){~n', []),
+<<<<<<< HEAD
     format(Stream, '~t ~t yield ',[]),
+=======
+    format(Stream, '~nyield ',[]),
+>>>>>>> 1d12efced075db5493c87ecef5edcacafaf67fa4
     generate_js(R, Stream),
     format(Stream, '_tag(',[]),
     generate_js(V, Stream),
     format(Stream, ');~n',[]),
+<<<<<<< HEAD
     format(Stream, '~t }~n', [])
+=======
+    format(Stream, '}~n', []),
+    format(Stream, '}~n', [])
+    %generate_js(function(V, E, R), Stream)
+>>>>>>> 1d12efced075db5493c87ecef5edcacafaf67fa4
 .
 
 generate_js(lambda(vartag(T, _)), Stream) :-
@@ -112,14 +133,14 @@ generate_js(lambda(vartag(T, _)), Stream) :-
     generate_js(T, Stream),
     format(Stream,'_tag = child => ur_tag("',[]),
     generate_js(T, Stream),
-    format(Stream, '",child);', [])
+    format(Stream, '", child);', [])
 .
 generate_js(lambda(tag(T)), Stream) :-
     format(Stream, 'const ',[]),
     generate_js(T, Stream),
     format(Stream,'_tag = children => ur_tag("',[]),
     generate_js(T, Stream),
-    format(Stream, '",children);', [])
+    format(Stream, '", children);', [])
 .
 
 generate_js(vartag(T, _), Stream) :-
