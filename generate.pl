@@ -60,6 +60,14 @@ generate_js(let(Left, Right), Stream) :-
     format(Stream, ';', [])
 .
 
+generate_js(let(I, E, U), Stream) :- 
+    format(Stream, 'let ', []),
+    generate_js(I, Stream),
+    format(Stream, ' = ', []),
+    generate_js(E, Stream),
+    format(Stream,' in ', []),
+    generate_js(U, Stream)
+.
 
 generate_js(urquery(I), Stream):-
     format(Stream, 'function ur_query01(uri){~n',[]),
@@ -83,17 +91,20 @@ generate_js(forquery(V, E, R), Stream) :-
     format(Stream, '");~n',[]),
     generate_js(lambda(R), Stream),
     format(Stream, '~n', []),
+    generate_js(for(V, R), Stream)
+    %generate_js(function(V, E, R), Stream)
+.
 
-    format(Stream, 'for (', []),
+generate_js(for(V, R), Stream) :-
+    format(Stream, '~t for (', []),
     generate_js(V, Stream),
     format(Stream, ' of xpath_result_iter){~n', []),
-    format(Stream, 'yield ',[]),
+    format(Stream, '~t ~t yield ',[]),
     generate_js(R, Stream),
     format(Stream, '_tag(',[]),
     generate_js(V, Stream),
     format(Stream, ');~n',[]),
-    format(Stream, '}~n', [])
-    %generate_js(function(V, E, R), Stream)
+    format(Stream, '~t }~n', [])
 .
 
 generate_js(lambda(vartag(T, _)), Stream) :-

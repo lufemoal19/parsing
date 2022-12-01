@@ -1,1 +1,1 @@
- <h1> { for $li in doc(uri)/li return <h2>{$li}</h2> } </h1>
+ let x = 'hola.xml'  in <h1> { for $li in doc(uri)/li return <h2>{$li}</h2> } </h1>
