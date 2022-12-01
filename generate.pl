@@ -29,19 +29,11 @@ generate_js(comment(C), Stream) :-
 .
 
 generate_js(function(id(Name)), Stream) :-
-    format(Stream, '~n function ~s(', [Name]),
-    format(Stream, '){~n', []),
-    generate_main(Stream),
-    format(Stream, '~n}~n', [])
-.
-
-generate_main(Stream) :-
-    format(Stream, '~n let uri = ur_active_doc();', []),
-    format(Stream, '~n return urquery_01();', [])
+    format(Stream, '~nfunction ~s(){~n~t let uri = ur_activ_doc();~n~t return urquery_01(uri);~n}~n',[Name])
 .
 
 generate_js(function(id(Name), Args, Body), Stream) :-
-    format(Stream, '~n function ~s(uri', [Name]),
+    format(Stream, '~nfunction ~s(uri', [Name]),
     generate_js_argslist(Args, Stream),
     format(Stream, '){~n', []),
     generate_js(Body, Stream),
@@ -73,6 +65,9 @@ generate_js(let(Left, Right), Stream) :-
     format(Stream, ';', [])
 .
 
+generate_js(let(_, _, U), Stream) :- 
+    generate_js(U, Stream)
+.
 
 generate_js(urquery(I), Stream):-
     generate_js(I, Stream),
@@ -83,7 +78,7 @@ generate_js(tagquery(T,I), Stream) :-
     generate_js(lambda(tag(T)), Stream),
     format(Stream, '~n', []),
     generate_js(I, Stream),
-    format(Stream, 'return ', []),
+    format(Stream, '~nreturn ', []),
     generate_js(T, Stream),
     format(Stream, '_tag([...for_01(uri)]);', [])
 .
@@ -95,18 +90,21 @@ generate_js(forquery(V, E, R), Stream) :-
     format(Stream, '");~n',[]),
     generate_js(lambda(R), Stream),
     format(Stream, '~n', []),
+    generate_js(for(V, R), Stream),
+    format(Stream, '~n}',[])
+    %generate_js(function(V, E, R), Stream)
+.
 
-    format(Stream, 'for (', []),
+generate_js(for(V, R), Stream) :-
+    format(Stream, '~t for (', []),
     generate_js(V, Stream),
     format(Stream, ' of xpath_result_iter){~n', []),
-    format(Stream, '~nyield ',[]),
+    format(Stream, '~t ~t yield ',[]),
     generate_js(R, Stream),
     format(Stream, '_tag(',[]),
     generate_js(V, Stream),
     format(Stream, ');~n',[]),
-    format(Stream, '}~n', []),
-    format(Stream, '}~n', [])
-    %generate_js(function(V, E, R), Stream)
+    format(Stream, '~t }~n', [])
 .
 
 generate_js(lambda(vartag(T, _)), Stream) :-
