@@ -1,5 +1,5 @@
 /*
-@about server
+@about server service
 @authors Grupo 3-1pm
 @since 2022
 */
@@ -13,14 +13,12 @@
 :- use_module(generate).
 
 % URL handlers.
-:- http_handler('/add', handle_request, [method(post)]).
+:- http_handler('/compile', handle_request, [method(post)]).
 :- http_handler('/', home, []).
-
-
 
 handle_request(Request) :-
     http_read_json_dict(Request, Query),
-    solve(Query, Solution),
+    compiler(Query, Solution),
     reply_json_dict(Solution).
 
 server(Port) :-
@@ -29,26 +27,26 @@ server(Port) :-
 set_setting(http:logfile, 'service_log_file.log').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% BUSINESS LOGIC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Calculates a + b.
-solve(_{code: L}, _{status: true, answer:N, msg:'succeed'}) :-
-    %atom_codes(L, Codes),
+% Transcompiler of urquery code into javascript code.
+compiler(_{code: L}, _{status: true, answer:js_code, msg:'succeed'}) :-
     response(L, JSAtom),
-    N = JSAtom
+    js_code = JSAtom
 .
-solve(_{code: L}, _{accepted: false, answer:L, msg:'Error: failed syntax validation'}).
+compiler(_{code: L}, _{accepted: false, answer:L, msg:'Error: failed syntax validation'}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 home(_Request) :-
-        reply_html_page(title('Mini Add Service'),
-                        [ h1('To use it:'),
-                          p([h4('Send a post messsage'),
-                             h4('URI:/add'),
-                             h4('body: JSON data of the form {"a":number, "b":number}'),
-                             h4('Service Responds with JSON as follows:'),
-                             ul([li('{accepted:true, answer:a+b}    if data ok'),
-                                 li('{accepted:false, answer:0, msg:some_error_message} othwerwise')])
-                            ])
-                        ]).
+    reply_html_page(title('Transcompiler Service'),
+    [ h1('To use it:'),
+        p([h4('Send urquery code'),
+            h4('URI:/compile'),
+            h4('body: JSON data of the form {"a":number, "b":number}'),
+            h4('Service Responds with JSON as follows:'),
+            ul([li('{accepted:true, answer:a+b}    if data ok'),
+                li('{accepted:false, answer:0, msg:some_error_message} othwerwise')])
+        ])
+    ])
+.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MAIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- initialization
@@ -58,18 +56,3 @@ home(_Request) :-
     format('*** Serving on port ~d *** ~n', [Port]),
     server(Port).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-extract_code_bytes(JSon, Bytes):-
-    SourceCode = JSon.get(code),
-	atom_codes(SourceCode, Bytes)
-.
-
-test_03 :-
-   JSon = _{code:'//My first comment*\nlet d = "text.xml";\nlet a = "text2.xml";'},
-   extract_code_bytes(JSon, Bytes),
-   format('~s~n', [Bytes]),
-   atom_codes(FromBytes, Bytes),
-   Original = JSon.get(code),
-   format('original ~n~s~n == ~n~s~n', [Original, FromBytes])
-.

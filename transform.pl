@@ -1,5 +1,5 @@
 /*
-@about transform
+@about transform UrQuery into JS
 @authors Grupo 3-1pm
 @since 2022
 */
