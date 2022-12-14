@@ -24,6 +24,12 @@ generate_js(sequence(L), Stream) :-
     forall(member(P, L), (generate_js(P, Stream), nl(Stream)) )
 .
 
+generate_js(import(args(L), library(D)), Stream) :-
+    format(Stream, 'import {', []),
+    generate_js_argslist(L, Stream),
+    format(Stream, '} from ./~s;', [D])
+.
+
 generate_js(comment(C), Stream) :-
     format(Stream, '// ~s~n', [C])
 .
@@ -33,7 +39,7 @@ generate_js(function(id(Name)), Stream) :-
 .
 
 generate_js(function(id(Name), Args, Body), Stream) :-
-    format(Stream, '~nfunction ~s(uri', [Name]),
+    format(Stream, '~nfunction ~s(', [Name]),
     generate_js_argslist(Args, Stream),
     format(Stream, '){~n', []),
     generate_js(Body, Stream),
@@ -58,7 +64,7 @@ generate_js(return, Stream) :-
 .
 
 generate_js(let(Left, Right), Stream) :-
-    format(Stream, 'let ', []),
+    format(Stream, ' let ', []),
     generate_js(Left, Stream),
     format(Stream, ' = ', []),
     generate_js(Right, Stream),
@@ -84,7 +90,6 @@ generate_js(tagquery(T,I), Stream) :-
 .
 
 generate_js(forquery(V, E, R), Stream) :-
-    format(Stream,'import {ur_doc, ur_evaluate, ur_tag, ur_active_doc} from ''./urquery.mjs''~n~t',[]),
     format(Stream,'function * for_01(uri){~n~t',[]),
     format(Stream, 'const xpath_result_iter = ur_evaluate(ur_doc(uri,"',[]),
     generate_js(path(E), Stream),
@@ -167,7 +172,7 @@ generate_js(xpath(I, R), Stream):-
 generate_js(id(I), Stream)   :- format(Stream, '~s', I).
 generate_js(expr(E), Stream) :- format(Stream, '"~s"', E).
 generate_js(num(N), Stream)  :- format(Stream, '~d', N).
-
+generate_js(S, Stream)  :- format(Stream, '~s', S).
 %%%  generate args list
 
 generate_js_argslist([], _).
