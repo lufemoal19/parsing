@@ -1,3 +1,10 @@
+/*
+@about atom_stream 
+@authors 
+    natalia.ar969@gmail.com
+    lufemoal19@gmail.com
+@since 2022
+*/
 :- module(atom_stream, [open_memory_outputstream/2]).
 
 open_memory_outputstream(Handle, InMemoryStream):-

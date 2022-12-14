@@ -1,9 +1,10 @@
 /*
 @about Generador JS
-@authors Grupo 3-1pm
+@authors 
+    natalia.ar969@gmail.com
+    lufemoal19@gmail.com
 @since 2022
 */
-
 
 :- module(generate, [response/2]).
 

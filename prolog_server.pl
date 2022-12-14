@@ -1,6 +1,9 @@
 /*
-@about server service
-@authors Grupo 3-1pm
+@about prolog_server 
+    simple web service --> localhost:8000
+@authors 
+    natalia.ar969@gmail.com
+    lufemoal19@gmail.com
 @since 2022
 */
 :- use_module(library(http/thread_httpd)).
