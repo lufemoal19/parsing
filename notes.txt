@@ -11,6 +11,13 @@
  $hola 
 
 
+generate_js(tagquery(T,I), Stream) :-
+    generate_js(lambda(tag(T)), Stream),
+    format(Stream, '~n', []),
+    generate_js(I, Stream),
+    generate_js(return(T,'_tag([...for_01(uri)])'), Stream)
+.
+
 %/catalogo/producto/nombre
 %xpath "/" tag(I)
 xpath(xpath([I|R])) --> (tag(I) ; "/", xpath(R)). 

@@ -32,7 +32,7 @@ generate_js(import(args(L), library(D)), Stream) :-
 .
 
 generate_js(comment(C), Stream) :-
-    format(Stream, '// ~s~n', [C])
+    format(Stream, '// ~s', [C])
 .
 
 generate_js(function(id(Name)), Stream) :-
@@ -47,6 +47,14 @@ generate_js(function(id(Name), Args, Body), Stream) :-
     format(Stream, '}~n', [])
 .
 
+generate_js(function*(id(Name), Args, Body), Stream) :-
+    format(Stream, '~nfunction* ~s(', [Name]),
+    generate_js_argslist(Args, Stream),
+    format(Stream, '){~n', []),
+    generate_js(Body, Stream),
+    format(Stream, '~n}', [])
+.
+
 generate_js(call(Expr, Args), Stream) :-
     generate_js(Expr, Stream),
     format(Stream, '(', []),
@@ -56,6 +64,13 @@ generate_js(call(Expr, Args), Stream) :-
 
 generate_js(return(Expr), Stream) :-
     format(Stream, ' return ', []),
+    generate_js(Expr, Stream),
+    format(Stream, ';', [])
+.
+
+generate_js(return(T, Expr), Stream) :-
+    format(Stream, '~n return ', []),
+    generate_js(T, Stream),
     generate_js(Expr, Stream),
     format(Stream, ';', [])
 .
@@ -77,7 +92,7 @@ generate_js(let(_, _, U), Stream) :-
 .
 
 generate_js(urquery(I), Stream):-
-    generate_js(I, Stream),
+    generate_js(function*(id(for_01), [uri], I), Stream),
     format(Stream, '~n',[])
 .
 
@@ -85,21 +100,17 @@ generate_js(tagquery(T,I), Stream) :-
     generate_js(lambda(tag(T)), Stream),
     format(Stream, '~n', []),
     generate_js(I, Stream),
-    format(Stream, '~nreturn ', []),
-    generate_js(T, Stream),
-    format(Stream, '_tag([...for_01(uri)]);', [])
+    generate_js(return(T,'_tag([...for_01(uri)])'), Stream)
 .
 
 generate_js(forquery(V, E, R), Stream) :-
-    format(Stream,'function * for_01(uri){~n~t',[]),
     format(Stream, 'const xpath_result_iter = ur_evaluate(ur_doc(uri,"',[]),
     generate_js(path(E), Stream),
     format(Stream, '");~n',[]),
     generate_js(lambda(R), Stream),
     format(Stream, '~n', []),
     generate_js(for(V, R), Stream),
-    format(Stream, '~n}',[])
-    %generate_js(function(V, E, R), Stream)
+    format(Stream, '~n',[])
 .
 
 generate_js(for(V, R), Stream) :-
@@ -199,7 +210,7 @@ test(JSAtom) :-
     format('Ast from Input = ~q~n', [Prog]),
     toJS(Prog, JSProg),
     generate_js_to_atom(JSProg, JSAtom),
-    format('Output = ~n~s~n', [JSAtom])    
+    format('Output = ~n~s~n', [JSAtom]), !  
 .
 
 response(Request, JSAtom) :-
