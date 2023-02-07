@@ -1,4 +1,0 @@
- let l = 'name' in <tab> { 
-    for $li in doc('uri')/li
-    return <html>{$li/item}</html> 
-    } </tab>

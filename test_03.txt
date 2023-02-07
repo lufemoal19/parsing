@@ -1,0 +1,4 @@
+let tables = '.' in <table> { 
+    for $column in doc ('index.html')/tables/tr
+        return <tr> {$column} </tr>
+    } </table>

@@ -48,7 +48,7 @@ generate_js(function*(id(Name), Args, Body), Stream) :-
     generate_js_argslist(Args, Stream),
     format(Stream, '){~n', []),
     generate_js(Body, Stream),
-    format(Stream, '~n}', [])
+    format(Stream, '~n}~n', [])
 .
 
 generate_js(call(Expr, Args), Stream) :-
@@ -73,6 +73,18 @@ generate_js(return(T, Expr), Stream) :-
 
 generate_js(return, Stream) :-
     format(Stream, '~n return;', [])
+.
+
+generate_js(yield(Expr), Stream) :-
+    format(Stream, '~t ~t yield ', []),
+    generate_js(Expr, Stream),
+    format(Stream, ';', [])
+.
+
+generate_js(spread(Expr), Stream) :-
+    format(Stream, '...[', []),
+    generate_js(Expr, Stream),
+    format(Stream, ']', [])
 .
 
 generate_js(const(Left, Right), Stream) :-
@@ -100,10 +112,9 @@ generate_js(urquery(I), Stream):-
 .
 
 generate_js(tagquery(T,I), Stream) :-
-    generate_js(const(id_tag(T),lambda(tag(T))), Stream),
+    generate_js(const(id_tag(T), lambda(tag(T))), Stream),
     generate_js(function*(id(for_01), [uri], I), Stream),
-    format(Stream, '~n', []),
-    generate_js(return(call(id_tag(T),['[...for_01(uri)]'])), Stream)
+    generate_js(return(call(id_tag(T), [spread(call(for_01, [uri]))])), Stream)
 .
 
 generate_js(forquery(V, E, R), Stream) :-
@@ -116,9 +127,8 @@ generate_js(for(V, R), Stream) :-
     format(Stream, '~t for (', []),
     generate_js(V, Stream),
     format(Stream, ' of xpath_result_iter){~n', []),
-    format(Stream, '~t ~t yield ',[]),
-    generate_js(call(R,[V]), Stream),
-    format(Stream, ';~n~t }', [])
+    generate_js(yield(call(R, [V])), Stream),
+    format(Stream, '~n~t }', [])
 .
 
 generate_js(lambda(vartag(T, _)), Stream) :-
@@ -162,6 +172,7 @@ generate_js(qvar(I, R), Stream) :-
     generate_js(I, Stream),
     generate_js(R, Stream)
 .
+
 generate_js(qvar(I), Stream) :- generate_js(I, Stream).
 
 generate_js(xpath(I), Stream) :- 
@@ -175,11 +186,14 @@ generate_js(xpath(I, R), Stream):-
 
 generate_js(id(I), Stream)   :- format(Stream, '~s', I).
 generate_js(tag(T), Stream) :- format(Stream, '~s',T).
-generate_js(id_tag(tag(I)), Stream)   :- format(Stream, '~s_tag', I).
+generate_js(id_tag(tag(I)), Stream) :- format(Stream, '~s_tag', I).
 generate_js(expr(E), Stream) :- format(Stream, '"~s"', E).
 generate_js(num(N), Stream)  :- format(Stream, '~d', N).
 generate_js(S, Stream)  :- format(Stream, '~s', S).
-%%%  generate args list
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  generate args list %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 generate_js_argslist([], _).
 generate_js_argslist([Arg], Stream) :- !,
@@ -196,7 +210,11 @@ generate_js_argslist([Arg1, Arg2 | RestArgs], Stream) :-
 
 %%%%%%%%%% TESTS %%%%%%%%%%
 test(JSAtom) :-
-    File = 'test.txt',
+    test_00(JSAtom)
+.
+
+test_00(JSAtom) :-
+    File = 'test_00.txt',
     read_file_to_codes(File, Codes, []),
     atom_codes(Input, Codes),
     format('Input = ~n~s~n', [Input]),
@@ -206,6 +224,46 @@ test(JSAtom) :-
     generate_js_to_atom(JSProg, JSAtom),
     format('Output = ~n~s~n', [JSAtom]), !  
 .
+
+test_01(JSAtom) :-
+    File = 'test_01.txt',
+    read_file_to_codes(File, Codes, []),
+    atom_codes(Input, Codes),
+    format('Input = ~n~s~n', [Input]),
+    phrase(prog_urquery(Prog), Codes),
+    format('Ast from Input = ~q~n', [Prog]),
+    toJS(Prog, JSProg),
+    generate_js_to_atom(JSProg, JSAtom),
+    format('Output = ~n~s~n', [JSAtom]), !  
+.
+
+test_02(JSAtom) :-
+    File = 'test_02.txt',
+    read_file_to_codes(File, Codes, []),
+    atom_codes(Input, Codes),
+    format('Input = ~n~s~n', [Input]),
+    phrase(prog_urquery(Prog), Codes),
+    format('Ast from Input = ~q~n', [Prog]),
+    toJS(Prog, JSProg),
+    generate_js_to_atom(JSProg, JSAtom),
+    format('Output = ~n~s~n', [JSAtom]), !  
+.
+
+test_03(JSAtom) :-
+    File = 'test_03.txt',
+    read_file_to_codes(File, Codes, []),
+    atom_codes(Input, Codes),
+    format('Input = ~n~s~n', [Input]),
+    phrase(prog_urquery(Prog), Codes),
+    format('Ast from Input = ~q~n', [Prog]),
+    toJS(Prog, JSProg),
+    generate_js_to_atom(JSProg, JSAtom),
+    format('Output = ~n~s~n', [JSAtom]), !  
+.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% RESPONSE TO SERVER %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 response(Request, JSAtom) :-
     atom_codes(Request, Codes),

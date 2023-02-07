@@ -1,0 +1,4 @@
+let file = 'catalog.xml' in <ul> { 
+    for $product in doc ('file')/catalog/product/name 
+        return <li>{$product/name}</li> 
+    } </ul>

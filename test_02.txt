@@ -1,0 +1,4 @@
+let file = 'index.html' in <body> { 
+    for $p in doc ('file')/p
+        return <main> {$p} </main> 
+    } </body>
