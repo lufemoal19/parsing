@@ -42,6 +42,7 @@ startxpath(I) --> slash, xpath(I).
 xpath(xpath(I, R)) --> xml_id(I), slash, xpath(R).
 xpath(xpath(I)) --> xml_id(I). 
 
+qvar(qvar(I, R)) --> dolar, id(I), startxpath(R), ws.
 qvar(qvar(I)) --> dolar, id(I), ws.
 tag(tag(I)) --> ws, xml_id(I), ws.
 

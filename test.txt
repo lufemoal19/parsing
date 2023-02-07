@@ -1,4 +1,4 @@
- let l = 'name' in <li> { 
-    for $prod in doc ('catalogo.xml')/producto/categoria 
-    return <ul>{$prod/nombre}</ul> 
-    } </li>
+ let l = 'name' in <tab> { 
+    for $li in doc('uri')/li
+    return <html>{$li/item}</html> 
+    } </tab>
