@@ -9,10 +9,13 @@
 :- module(parsing, [prog_urquery/3]).
 :- use_module(lexing).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% URQUERY PARSER %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 prog_urquery(sequence(L)) --> urquery_list(L), {!}.
 prog_urquery(none) --> [].
 
-urquery_list([L | R]) --> (letprog(L); urquery(L); tagquery(L);forquery(L);exprquery(L); vartag(L); varpath(L);docpath(L); startxpath(L);xpath(L);qvar(L)), urquery_list(R), {!}.
 urquery_list([L | R]) --> (letprog(L); urquery(L)), urquery_list(R), {!}.
 urquery_list([]) --> [].
 
@@ -33,16 +36,16 @@ docpath(docpath(E)) --> doc, left_round, expr(E), right_round.
 
 varquery(I) --> vartag(I); varpath(I).
 
-vartag(vartag(T,I)) --> left_tag, tag(T), right_tag, left_bracket, varpath(I), right_bracket, close_tag, tag(T), right_tag. 
+vartag(vartag(T, I)) --> left_tag, tag(T), right_tag, left_bracket, varpath(I), right_bracket, close_tag, tag(T), right_tag. 
 
-varpath(varpath(I, P)) --> (qvar(I), startxpath(P) ; qvar(I)).
+varpath(varpath(I, P)) --> qvar(I), startxpath(P).
+varpath(varpath(qvar(I))) -->  qvar(I).
 
 startxpath(I) --> slash, xpath(I).
 
 xpath(xpath(I, R)) --> xml_id(I), slash, xpath(R).
 xpath(xpath(I)) --> xml_id(I). 
 
-qvar(qvar(I, R)) --> dolar, id(I), startxpath(R), ws.
 qvar(qvar(I)) --> dolar, id(I), ws.
 tag(tag(I)) --> ws, xml_id(I), ws.
 
@@ -53,7 +56,10 @@ xml_id(I) --> identifier(I).
 num(num(N)) --> number(N).
 uq_string(expr(I)) --> quote, identifier(I), quote.
 
-%%% SYMBOL TABLE %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% SYMBOL TABLE %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 quote --> ws, [39], ws.
 slash --> [47].
 left_tag --> ws, [60], ws.
@@ -71,7 +77,10 @@ for --> ws, [102, 111, 114], ws.
 doc --> ws, [100, 111, 99], ws.
 in --> ws, [105, 110], ws.
 return --> ws, [114, 101, 116, 117, 114, 110], ws.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%% UNIT TEST %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 test(L) :- 
     File = 'test.txt',

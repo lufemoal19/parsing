@@ -12,7 +12,6 @@
 :- use_module(atom_stream).
 :- use_module(transform).
 
-
 generate_js_to_atom(JSAst, JSAtom) :-
   open_memory_outputstream(Handle, InMemoryStream),
   generate_js(JSAst, InMemoryStream),
@@ -49,6 +48,11 @@ generate_js(function*(id(Name), Args, Body), Stream) :-
     format(Stream, '){~n', []),
     generate_js(Body, Stream),
     format(Stream, '~n}~n', [])
+.
+
+generate_js(lambda(Args, Body), Stream) :-
+    format(Stream, '~s => ', [Args]),
+    generate_js(Body, Stream)
 .
 
 generate_js(call(Expr, Args), Stream) :-
@@ -111,35 +115,24 @@ generate_js(urquery(I), Stream):-
     generate_js(I, Stream)
 .
 
-generate_js(tagquery(T,I), Stream) :-
-    generate_js(const(id_tag(T), lambda(tag(T))), Stream),
+generate_js(tagquery(T, I), Stream) :-
+    generate_js(const(id_tag(T), lambda(children, call(ur_doc, [quote(T), children]))), Stream),
     generate_js(function*(id(for_01), [uri], I), Stream),
     generate_js(return(call(id_tag(T), [spread(call(for_01, [uri]))])), Stream)
 .
 
 generate_js(forquery(V, E, R), Stream) :-
-    generate_js(const('xpath_result_iter', call(ur_evaluate, [call(ur_doc, [uri]), path(E)])), Stream),
-    generate_js(const(R, lambda(R)), Stream),
-    generate_js(for(V, R), Stream)
+    generate_js(const(xpath_result_iter, call(ur_evaluate, [call(ur_doc, [uri]), path(E)])), Stream),
+    generate_js(const(id_tag(R), lambda(child, call(ur_doc,[quote(R), child]))), Stream),
+    generate_js(for(V, id(xpath_result_iter), R), Stream)
 .
 
-generate_js(for(V, R), Stream) :-
+generate_js(for(V, id(Name), R), Stream) :-
     format(Stream, '~t for (', []),
     generate_js(V, Stream),
-    format(Stream, ' of xpath_result_iter){~n', []),
-    generate_js(yield(call(R, [V])), Stream),
+    format(Stream, ' of ~s){~n', [Name]),
+    generate_js(yield(call(id_tag(R), [V])), Stream),
     format(Stream, '~n~t }', [])
-.
-
-generate_js(lambda(vartag(T, _)), Stream) :-
-    format(Stream,'child => ur_tag("',[]),
-    generate_js(T, Stream),
-    format(Stream, '", child)', [])
-.
-generate_js(lambda(tag(T)), Stream) :-
-    format(Stream,'children => ur_tag("',[]),
-    generate_js(T, Stream),
-    format(Stream, '", children)', [])
 .
 
 generate_js(exprquery(I, P), Stream) :- 
@@ -147,14 +140,14 @@ generate_js(exprquery(I, P), Stream) :-
     generate_js(P, Stream)
 .
 
+generate_js(exprquery(I), Stream) :-
+    generate_js(I, Stream)
+.
+
 generate_js(path(exprquery(_, P)), Stream) :- 
     format(Stream, '"',[]),
     generate_js(P, Stream),
     format(Stream, '"',[])
-.
-
-generate_js(exprquery(I), Stream) :-
-    generate_js(I, Stream)
 .
 
 generate_js(docpath(E), Stream) :- 
@@ -166,14 +159,22 @@ generate_js(varpath(V, X), Stream) :-
     generate_js(X, Stream)
 .
 
-generate_js(vartag(T, _), Stream) :- generate_js(id_tag(T), Stream).
-
-generate_js(qvar(I, R), Stream) :- 
-    generate_js(I, Stream),
+generate_js(vartag(T, R), Stream) :- 
+    generate_js(T, Stream),
     generate_js(R, Stream)
 .
 
-generate_js(qvar(I), Stream) :- generate_js(I, Stream).
+generate_js(id_tag(vartag(T, _)), Stream) :- 
+    generate_js(id_tag(T), Stream)
+.
+
+generate_js(quote(vartag(T, _)), Stream) :- 
+    generate_js(quote(T), Stream)
+.
+
+generate_js(qvar(I), Stream) :- 
+    generate_js(I, Stream)
+.
 
 generate_js(xpath(I), Stream) :- 
     format(Stream, "/~s", I)
@@ -186,6 +187,7 @@ generate_js(xpath(I, R), Stream):-
 
 generate_js(id(I), Stream)   :- format(Stream, '~s', I).
 generate_js(tag(T), Stream) :- format(Stream, '~s',T).
+generate_js(quote(tag(T)), Stream) :- format(Stream, '"~s"',T).
 generate_js(id_tag(tag(I)), Stream) :- format(Stream, '~s_tag', I).
 generate_js(expr(E), Stream) :- format(Stream, '"~s"', E).
 generate_js(num(N), Stream)  :- format(Stream, '~d', N).
@@ -207,8 +209,10 @@ generate_js_argslist([Arg1, Arg2 | RestArgs], Stream) :-
     generate_js_argslist([Arg2 | RestArgs], Stream)
 .
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%% TESTS %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 test(JSAtom) :-
     test_00(JSAtom)
 .
