@@ -1,4 +1,0 @@
- let l = 'name' in <li> { 
-    for $prod in doc ('catalogo.xml')/producto/categoria 
-    return <ul>{$prod/nombre}</ul> 
-    } </li>

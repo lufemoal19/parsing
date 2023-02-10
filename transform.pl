@@ -14,6 +14,7 @@ toJS(sequence(L), sequence(JS)) :-
    Comment1 = comment('Se crea una funcion para el programa. Este es el query'),
    Main = function(id(main), [uri], sequence([let(id(uri), ('ur_active_doc()')), return('urquery_01(uri)')])),
    UrQueryFunction = function(id(urquery_01), [uri], sequence(L)),
+   Comment2 = comment('Se crea una funcion main que representa el let y el query'),
    CallMain = call(id(main), []),
-   JS = [Comment0, Import, Comment1, UrQueryFunction, Main, CallMain]
+   JS = [Comment0, Import, Comment1, UrQueryFunction, Comment2,Main, CallMain]
 .
