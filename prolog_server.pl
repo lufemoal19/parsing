@@ -10,7 +10,6 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_json)).
 :- use_module(library(http/http_log)).
-
 :- use_module(library(http/html_write)).
 
 :- use_module(generate).
@@ -43,9 +42,9 @@ home(_Request) :-
     [ h1('To use it:'),
         p([h4('Send urquery code'),
             h4('URI:/compile'),
-            h4('body: JSON data of the form {"a":number, "b":number}'),
+            h4('request body: JSON data of the form {"code": urquery code as a string}'),
             h4('Service Responds with JSON as follows:'),
-            ul([li('{accepted:true, answer:a+b}    if data ok'),
+            ul([li('{code: JS code, accepted:true, answer:a+b, , msg:succeed}    if data is ok'),
                 li('{accepted:false, answer:0, msg:some_error_message} othwerwise')])
         ])
     ])

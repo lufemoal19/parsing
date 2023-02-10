@@ -28,11 +28,14 @@ generate_js(sequence(L), Stream) :-
 generate_js(import(args(L), library(D)), Stream) :-
     format(Stream, 'import {', []),
     generate_js_argslist(L, Stream),
-    format(Stream, '} from ./~s;', [D])
+    format(Stream, '} from ', []),
+    format(Stream, './\'', []),
+    format(Stream, '~s', [D]),
+    format(Stream, '\';', [])
 .
 
 generate_js(comment(C), Stream) :-
-    format(Stream, '// ~s', [C])
+    format(Stream, '// ~s~n', [C])
 .
 
 generate_js(function(id(Name)), Stream) :-
